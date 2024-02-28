@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('out'));
 app.use(express.json())
+app.use(express.urlencoded());
 // app.engine('jsx', reactViews.createEngine());
 app.get('/initiate-auth',(req,res)=>{
     res.redirect("/")
