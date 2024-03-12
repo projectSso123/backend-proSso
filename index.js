@@ -53,27 +53,31 @@ app.post("/api/login",async(req,res)=>{
     // return res.redirect(`http://localhost:3000/?token=${hash}`)
 })
 app.post("/api/access_token",(req,res)=>{
+  console.log("authinitiated")
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
       // If no authorization header is present, return a 401 Unauthorized response
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ success:false, error: 'Unauthorized' });
     }
   
     // Assuming the token is in the format: "Bearer <token>"
     const token = authorizationHeader.split(' ')[1];
-    const state = req.body.state;
   
    try{
      const data = jwt.verify(token,authcode_secrete);
-     if(data.state !== state){
-      throw new Error('unauthorized website');
-     }
-     res.status(200).json({status:"verifed",
-    token
-    })
+     res.status(200).json({
+      success:true,
+      "status":"verified",
+      "access_token":token,
+      "token_type":"bearer",
+      "expires_in":3600,
+      "refresh_token":token,
+      "scope":"create",
+      "state":data.state
+      })
    }
    catch(err){
-    return res.status(401).json("unable to verify due to "+ err);
+    return res.status(401).json({success:false,error:"unable to verify due to "+ err});
    }
 })
 app.listen(8080,()=>{
