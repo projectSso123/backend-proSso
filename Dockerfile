@@ -26,4 +26,4 @@ EXPOSE 8080
 
 Run npm i
 # Run the application.
-CMD ["node" ,"index.js"]
+CMD ["node" ,"./src/index.js"]
