@@ -1,6 +1,6 @@
-import connectDB from "./db/index.js";
+import connectDB from "./src/db/index.js";
 import express from "express";
-import {app} from './app.js'
+import {app} from './src/app.js'
 
 connectDB().then(()=>{
     app.listen(8080,()=>{
