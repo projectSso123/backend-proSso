@@ -25,3 +25,4 @@ const registerclient = asyncHandler(async(req, res)=>{
     return res.status(200).json(registeredclient)
 })
 export {registerclient}
+
