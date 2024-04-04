@@ -1,5 +1,4 @@
 import express from "express";
-import jwt  from "jsonwebtoken"
 import { getAccessCode } from "../controlers/access.controler.js";
 import { getAuthCode } from "../controlers/access.controler.js";
 import { Signup } from "../controlers/access.controler.js";
