@@ -1,21 +1,16 @@
 import express from "express"
 import bodyParser from "body-parser"
-import bcrypt from 'bcryptjs'
 import cors from 'cors'
-import jwt  from "jsonwebtoken"
+
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { ApiError } from "./utils/ApiError.js"
-import { asyncHandler } from "./utils/asyncHandler.js"
+
 import session from "express-session"
 
 import crypto from 'crypto'
-const authcode_secrete = "asdkfjsdkfdksafdsakfjssadkfs"
-const accesscode_secrete = "skfsjkadsfdasfasdfadsfasdfa"
-const refreshcode_secrete = "sfsoainfsafaskldfndskdsfa"
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const saltRound = 10
 const app = express()
 app.use(cors({
   "origin": ["http://localhost:3000",

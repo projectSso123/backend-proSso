@@ -112,7 +112,7 @@ const Signup = asyncHandler(async(req ,res)=>{
   if(exsitedUser){
     throw new ApiError(409,"user already exist")
   }
-  const user =  User.create({
+  const user =  await User.create({
     name,
     username,
     email,
@@ -142,7 +142,6 @@ const Signin = asyncHandler(async(req, res)=>{
   }
   const userobj = {username:user.username, email:user.email,}
   req.session.user = userobj;
-  console.log("this - >" , req.session.user)
   res.status(200).json({data:"accesstoken"})
 // validation about data from the form 
 // varify the user 

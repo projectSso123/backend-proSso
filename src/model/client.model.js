@@ -1,5 +1,7 @@
 import mongoose , {Schema} from "mongoose";
 import crypto from 'crypto'
+import { Admin } from "./admin.model.js";
+import { nextTick } from "process";
 const client_schema  = new Schema({
  applicationname:{
     type:String,
@@ -26,13 +28,26 @@ callbackURL:{
 },
 clientid:{
     type:String,
+    index:true,
     unique:true,
 },
 clientsecret:{
     type:String,
 
 }
+},{
+    timestamps:true,
 })
+
+client_schema.methods.addAdmin = async function(UserId){
+const admin = await Admin.create({
+    user:UserId,
+    client:this._id,
+    role:"CLIENT_ADMIN"
+})
+
+return admin;
+}
 
 async function createClientid(applicationname){
         return  crypto.randomBytes(32).toString('hex')+applicationname;
@@ -41,10 +56,12 @@ async function createClientid(applicationname){
  async function createClientsecret (){
         return crypto.randomBytes(32).toString('hex');
 }
-client_schema.post('save',async function(next){
-this.clientid = await createClientid(this.applicationname);
-this.clientsecret = await createClientsecret();
- await this.save();
- next();
+client_schema.pre('save',async function(next){
+    if (this.isNew) { // Check if the document is newly created
+        this.clientid = await createClientid("rootsso");
+        this.clientsecret = await createClientsecret();
+     // Save the document after setting the fields
+    }
+   next();
 })
 export const Client  = mongoose.model("Client",client_schema);
