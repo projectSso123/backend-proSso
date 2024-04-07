@@ -72,4 +72,18 @@ const getkeyandsecret = asyncHandler(async(req,res)=>{
 
   return res.status(200).json({key:client.clientid, secret:client.clientsecret})
 })
-export {registerclient, getkeyandsecret}
+
+const verifyclient = asyncHandler(async(req,res)=>{
+ const {response_type, client_id, redirect_uri , state}= req.body
+ if( [response_type, client_id , redirect_uri , state].some((field)=> field?.trim() === "")){
+
+  throw new ApiError(400 , "All fields are required")
+}
+   const client = await Client.findOne({clientid:client_id})
+   if(!client){
+    throw new ApiError(400,"Oauth client not found")
+   }
+
+  return res.status(200).json("client verified")
+})
+export {registerclient, getkeyandsecret,verifyclient}
