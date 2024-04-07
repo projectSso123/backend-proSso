@@ -100,7 +100,7 @@ const getAccessCode = asyncHandler(async(req,res)=>{
 })
 
 const Signup = asyncHandler(async(req ,res)=>{
-  const {name , username, email , password} = req.body;
+  const {name , username, email , password} = req.body
   if( [name, username , email , password].some((field)=> field?.trim() === "")){
 
     throw new ApiError(400 , "All fields are required")
