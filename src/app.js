@@ -25,12 +25,14 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('out'));
+
 function customSessionIdGenerator(req) {
   const timestampInSeconds = Math.floor(Date.now() / 1000); // Get current time in seconds
   const randomString = crypto.randomBytes(16).toString('hex'); // Generate 16 random bytes and convert to hexadecimal string
   return timestampInSeconds + '-' + randomString;
 
 }
+
 app.use(session({
   genid: customSessionIdGenerator,
   secret: 'your_secret_key',
@@ -42,7 +44,8 @@ app.use(session({
   
 app.get('/testing', (req, res) => {
     res.sendFile(join(__dirname, 'out', 'testing.html'));
-  });
+});
+
 app.get('*', (req, res) => {
   res.sendFile(join(__dirname, 'out', 'index.html'));
 });
@@ -51,8 +54,10 @@ app.get('*', (req, res) => {
 //import routes 
 
 import authRoutes from './routes/auth.route.js'
-
 import clientRoutes from './routes/client.route.js'
+
+
 app.use("/api",authRoutes);
 app.use("/api",clientRoutes)
+
 export {app};
