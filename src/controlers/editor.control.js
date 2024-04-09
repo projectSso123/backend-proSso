@@ -24,7 +24,15 @@ const Addnews = asyncHandler(async(req ,res)=>{
    })
    return res.status(200).json("news added")
 })
-
+const Getnews = asyncHandler(async(req ,res)=>{
+    const {user_id, client_id} = req.token
+    const client = await Client.findOne({clientid:client_id})
+    if(!client){
+     throw new ApiError(401, "client not found")
+    }
+    const news = await News.find({client:client._id}).exec()
+    res.status(200).json(news)
+})
 const Addnotification = asyncHandler(async(req ,res)=>{
     const {content} = req.body;
     const {user_id, client_id} = req.token
@@ -45,4 +53,13 @@ const Addnotification = asyncHandler(async(req ,res)=>{
    })
    return res.status(200).json("notificaion added")
 })
-export {Addnews,Addnotification}
+const Getapplication = asyncHandler(async(req ,res)=>{
+    const {user_id, client_id} = req.token
+    const client = await Client.findOne({clientid:client_id})
+    if(!client){
+     throw new ApiError(401, "client not found")
+    }
+    const news = await Notification.find({client:client._id}).exec()
+    res.status(200).json(news)
+})
+export {Addnews,Addnotification,Getnews,Getapplication}
