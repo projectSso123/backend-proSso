@@ -147,4 +147,13 @@ const Signin = asyncHandler(async(req, res)=>{
 // send response
 })
   
-export {getAuthCode,getAccessCode , Signup , Signin}
+const getProfile = asyncHandler(async(req, res)=>{
+  const sessionUser = req.session.user
+  const user = await User.findOne({email:sessionUser.email}).select("-password -refreshToken");
+  if(!user){
+    throw new ApiError(401, "user not found")
+  }
+  res.status(200).json(user)
+
+})
+export {getAuthCode,getAccessCode , Signup , Signin , getProfile}

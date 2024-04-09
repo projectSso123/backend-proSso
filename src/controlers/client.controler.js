@@ -105,4 +105,22 @@ const addEditor = asyncHandler(async(req,res)=>{
   })
   res.status(200).json("editor added successfully")
 })
-export {registerclient, getkeyandsecret,verifyclient, addEditor}
+const getApplications = asyncHandler(async(req,res)=>{
+  const sessionUser = req.session.user;
+ const user = await User.findOne({email:sessionUser.email}).select("-password -refreshToken")
+ if(!user){
+  throw new ApiError(401,"user not found")
+ }
+ const clients = await Employee.find({
+  $and:[{ user:user._id },{ role:"CLIENT_ADMIN" }]
+ }).exec()
+ let client_details = [];
+ for (const client of clients) {
+  const temp = await Client.findOne({ _id: client.client }).select("-clientid -clientsecret");
+  console.log(temp);
+  client_details.push(temp);
+}
+ 
+ res.status(200).json(client_details)
+})
+export {registerclient, getkeyandsecret,verifyclient, addEditor,getApplications}
