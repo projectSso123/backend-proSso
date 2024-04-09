@@ -15,9 +15,16 @@ const admin_schema = new Schema({
      role:{
         type:String,
         trim:true,
+        required:true,
+
+     },
+     verified:{
+      type:Boolean,
+      default:false,
+      required:true
      }
 },{
     timestamps:true,
 })
 
-export const Admin = mongoose.model("Admin",admin_schema);
+export const Employee = mongoose.model("Employee",admin_schema);

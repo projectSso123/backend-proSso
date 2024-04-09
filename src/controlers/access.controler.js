@@ -120,8 +120,7 @@ const Signup = asyncHandler(async(req ,res)=>{
   })
   const registeredUser = await User.findOne(user._id).select("-password -refreshToken");
 
-  console.log(registeredUser);
-  
+
   res.status(200).json(registeredUser)
 
 })

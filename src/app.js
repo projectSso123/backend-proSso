@@ -46,6 +46,9 @@ app.get('/testing', (req, res) => {
 app.get('*', (req, res) => {
   res.sendFile(join(__dirname, 'out', 'index.html'));
 });
+app.get('/dashboard',(req,res)=>{
+  res.sendFile(join(__dirname,'out',"dashboard.html"))
+})
 
 
 //import routes 

@@ -1,6 +1,6 @@
 import mongoose , {Schema} from "mongoose";
 import crypto from 'crypto'
-import { Admin } from "./admin.model.js";
+import { Employee } from "./employee.model.js";
 import { nextTick } from "process";
 const client_schema  = new Schema({
  applicationname:{
@@ -40,10 +40,11 @@ clientsecret:{
 })
 
 client_schema.methods.addAdmin = async function(UserId){
-const admin = await Admin.create({
+const admin = await Employee.create({
     user:UserId,
     client:this._id,
-    role:"CLIENT_ADMIN"
+    role:"CLIENT_ADMIN",
+    verified:true
 })
 
 return admin;

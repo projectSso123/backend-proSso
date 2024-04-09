@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Client } from "../model/client.model.js";
 import { User } from "../model/user.model.js";
-import { Admin } from "../model/admin.model.js";
+import { Employee } from "../model/employee.model.js";
 
 const registerclient = asyncHandler(async(req, res)=>{
     const {applicationname , homepageURL, description , callbackURL} = req.body;
@@ -62,7 +62,7 @@ const getkeyandsecret = asyncHandler(async(req,res)=>{
     throw new ApiError(401, "client not found")
   }
   
-  const admin = await Admin.findOne({
+  const admin = await Employee.findOne({
     $and:[{ client:client._id },{ user:user._id }]
   });
   if(!admin){
@@ -86,4 +86,23 @@ const verifyclient = asyncHandler(async(req,res)=>{
 
   return res.status(200).json("client verified")
 })
-export {registerclient, getkeyandsecret,verifyclient}
+const addEditor = asyncHandler(async(req,res)=>{
+  const { client_id , email} = req.body
+
+  const user = await User.findOne({email:email})
+  const client = await Client.findOne({clientid:client_id})
+  if(!user){
+    throw new ApiError(401, "User not found")
+  }
+  if(!client){
+    throw new ApiError(401, "User not found")
+  }
+  const employee = await Employee.create({
+    user:user._id,
+    client:client._id,
+    role:"EDITOR-CMS",
+    verified:false
+  })
+  res.status(200).json("editor added successfully")
+})
+export {registerclient, getkeyandsecret,verifyclient, addEditor}
