@@ -23,4 +23,17 @@ const addNews = asyncHandler(async(req,res)=>{
    })
    return res.status(200).json("news added")
 })
-export {addNews}
+const getNews = asyncHandler(async(req, res)=>{
+    const sessionUser = req.session.user;
+    const user = await User.findOne({email:sessionUser.email}) 
+    if(!user){
+        throw new ApiError(401, "user not found")
+   }
+   const superAdmin = await SuperAdmin.findOne({user:user._id});
+   if(!superAdmin){
+    throw new ApiError(403,"unauthorized")
+   }
+   const news = await News.find({broadcast:true}).exec()
+   res.status(200).json(news)
+})
+export {addNews,getNews}
