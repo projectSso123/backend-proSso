@@ -59,10 +59,12 @@ app.get('/dashboard',(req,res)=>{
 import authRoutes from './routes/auth.route.js'
 import clientRoutes from './routes/client.route.js'
 import newsroutes from './routes/news.route.js'
+import notificationroute from './routes/notification.route.js'
 
 
 app.use("/api",authRoutes);
 app.use("/api",clientRoutes);
 app.use("/api",newsroutes)
+app.use("/api",notificationroute)
 
 export {app};
