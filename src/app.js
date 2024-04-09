@@ -46,6 +46,17 @@ app.get('/testing', (req, res) => {
     res.sendFile(join(__dirname, 'out', 'testing.html'));
 });
 
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  // Perform login logic (e.g., check credentials against database)
+  if (email === 'admin' && password === 'password') {
+    return res.status(200).json({ message: 'Login successful' });
+  } else {
+    return res.status(401).json({ message: 'Invalid credentials' });
+  }
+});
+
 app.get('*', (req, res) => {
   res.sendFile(join(__dirname, 'out', 'index.html'));
 });
