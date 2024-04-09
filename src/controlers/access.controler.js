@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import jwt  from "jsonwebtoken";
 import { User } from "../model/user.model.js";
 import session from "express-session"
+import { SuperAdmin } from "../model/super.admin.js";
 const authcode_secrete = "asdkfjsdkfdksafdsakfjssadkfs"
 const accesscode_secrete = "skfsjkadsfdasfasdfadsfasdfa"
 const refreshcode_secrete = "sfsoainfsafaskldfndskdsfa"
@@ -119,7 +120,9 @@ const Signup = asyncHandler(async(req ,res)=>{
     password
   })
   const registeredUser = await User.findOne(user._id).select("-password -refreshToken");
-
+  const superadmin = await SuperAdmin.create({
+    user:registeredUser._id  
+  })
 
   res.status(200).json(registeredUser)
 
