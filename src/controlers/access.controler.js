@@ -22,6 +22,7 @@ const generateAccessCode = async(payload)=>{
    }
 
    const generateAccessToken = async(payload)=>{
+    console.log(payload)
     const accessCode =  jwt.sign({
       data:payload
   },accesscode_secrete,{expiresIn:1000})
@@ -35,20 +36,21 @@ const generateAccessCode = async(payload)=>{
   }
 
   const getAuthCode = asyncHandler(async(req,res)=>{
-  
-    const email = req.body.email;
-    const state = req.body.state;
+  const clientData = req.body
+  const sessionUser = req.session.user
     
-    const user = await User.findOne({email})
+    const user = await User.findOne({email:sessionUser.email})
     if(!user){
       console.log(email)
       throw new ApiError(401,"user not found here")
     }
     const payload = {
         user_id:user._id,
+        client_id:clientData.client_id,
         email:user.email,
-        state:state,
+        state:clientData.state,
     }
+    console.log(payload)
     const accessCode = await generateAccessCode(payload);
     return res.json(accessCode)
     // return res.redirect(`http://localhost:3000/?token=${hash}`)
@@ -63,22 +65,24 @@ const getAccessCode = asyncHandler(async(req,res)=>{
   
     // Assuming the token is in the format: "Bearer <token>"
     const token = authorizationHeader.split(' ')[1];
+    
   
    try{
      const data = jwt.verify(token,authcode_secrete);
+  
      const access_token_payload = {
-      user_id:"1213",
-      role:"admin",
-      use_email:"rob@gmail.com"
+      user_id:data.data.user_id,
+      client_id:data.data.client_id,
+       
      }
      const refresh_token_payload = {
-      user_id : "1234"
+      user_id:data.data.user_id,
+      client_id:data.data.user_id,
      }
     const access_token =await generateAccessToken(access_token_payload)
     const refresh_token = await generateRefreshToekn(refresh_token_payload)
     const options = {
-      httpOnly:true,
-      secure:true
+  
     }
      return res.status(200).
       cookie("accessToken",access_token,options).

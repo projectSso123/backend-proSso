@@ -1,40 +1,19 @@
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { uploadOnCloudinary } from "../utils/uploadOncloudinary.js";
+import { Banner } from "../model/banner.model.js";
 
-
-export const addBanner = async(req,res) => {
-    try {
-        const formdata = await req.formData();
-        const response = await fetch("http://localhost:3000/api/upload",{method: 'POST', body: formdata });
-        const res = await response.json();
-
-        console.log(res);
-
-        const src = res.cloudRes.url;
-        console.log(src);
-
-        if(src)
-        {
-            let links = await Banner.findOne({});
-
-            
-            if(!links)
-            {
-                const firstLink = Banner({links:src});
-                await firstLink.save();
-                return NextResponse.json({success:true,message:"This is added Link", updatedLinks:firstLink}) ;
-            }
-
-
-            links = await Banner.findOneAndUpdate(
-                {},
-                {$push : {links:src}},
-                {new:true}
-            )
-
-            return NextResponse.json({success:true,message:"This is added Link", updatedLinks:links}) ;
-        }
-        return NextResponse.json({success:false,message:"Some error in addBanner"}) ;
-            
-    } catch (error) {
-        
+const addBanner = asyncHandler(async(req,res)=>{
+    const localpath = req.files?.bannner[0]?.path
+    const cloudPath = await uploadOnCloudinary(localpath)
+    console.log(cloudPath)
+    if(!cloudPath){
+        throw new ApiError(401,"upload falied")
     }
-}
+    const banner = await Banner.create({
+        url:cloudPath,
+        broadcast:true,
+    })
+    return res.status(200).json("uploaded successfull")
+})
+export {addBanner}

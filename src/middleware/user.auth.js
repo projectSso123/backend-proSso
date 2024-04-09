@@ -1,5 +1,5 @@
-import { ApiError } from "../utils/ApiError";
-import { asyncHandler } from "../utils/asyncHandler";
+import { ApiError } from "../utils/ApiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const useAuth = asyncHandler(async(req, res,  next)=>{
     if(req.session && req.session.user){

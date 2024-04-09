@@ -60,11 +60,14 @@ import authRoutes from './routes/auth.route.js'
 import clientRoutes from './routes/client.route.js'
 import newsroutes from './routes/news.route.js'
 import notificationroute from './routes/notification.route.js'
-
+import bannerroutes from './routes/banner.route.js'
+import editorRoutes from './routes/editor.routes.js'
 
 app.use("/api",authRoutes);
 app.use("/api",clientRoutes);
 app.use("/api",newsroutes)
 app.use("/api",notificationroute)
+app.use("/api",bannerroutes)
+app.use("/api",editorRoutes)
 
 export {app};

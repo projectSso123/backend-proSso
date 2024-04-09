@@ -15,6 +15,8 @@ const newsSchema = new mongoose.Schema({
         required:true,
         default:false
     }
+},{
+    timestamps:true,
 });
 
 // Compile the schema into a model

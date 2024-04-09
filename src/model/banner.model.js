@@ -2,14 +2,23 @@ import mongoose from "mongoose";
 
 //  the schema for model
 const BannerSchema = new mongoose.Schema({
-    links: {
-        type: [String], // Array of strings
-        required: true,
-        default: [],
-    }
+    client:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Client",
+       },
+        url:{
+            type:String,
+            required:true,
+        },
+        broadcast:{
+            type:Boolean,
+            required:true,
+            default:false
+        }
+},{
+    timestamps:true,
 });
 
 // Compile the schema into a model
-const Banner = mongoose.models.Banner ||  mongoose.model('Banner', BannerSchema);
 
-export default Banner ;
+export const Banner = mongoose.model('Banner', BannerSchema);
