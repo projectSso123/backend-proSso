@@ -2,8 +2,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import jwt  from "jsonwebtoken";
 import { User } from "../model/user.model.js";
+import { Employee } from "../model/employee.model.js";
 import session from "express-session"
 import { SuperAdmin } from "../model/super.admin.js";
+import { Client } from "../model/client.model.js";
 const authcode_secrete = "asdkfjsdkfdksafdsakfjssadkfs"
 const accesscode_secrete = "skfsjkadsfdasfasdfadsfasdfa"
 const refreshcode_secrete = "sfsoainfsafaskldfndskdsfa"
@@ -124,9 +126,7 @@ const Signup = asyncHandler(async(req ,res)=>{
     password
   })
   const registeredUser = await User.findOne(user._id).select("-password -refreshToken");
-  const superadmin = await SuperAdmin.create({
-    user:registeredUser._id  
-  })
+
 
   res.status(200).json(registeredUser)
 
@@ -163,4 +163,13 @@ const getProfile = asyncHandler(async(req, res)=>{
   res.status(200).json(user)
 
 })
-export {getAuthCode,getAccessCode , Signup , Signin , getProfile}
+const addeditor = asyncHandler(async(req,res)=>{
+  const{userid , clientid} = req.body
+  const client = await Client.findOne({clientid:clientid})
+  if(!client){
+    throw new ApiError(401,"client not found")
+  }
+  const editor  = await Employee.create({user:userid,client:client._id,role:"EDITOR",verified:true})
+  res.status(200).json(editor)
+}) 
+export {getAuthCode,getAccessCode , Signup , Signin , getProfile, addeditor}

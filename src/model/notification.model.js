@@ -6,6 +6,10 @@ const notificationSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     ref:"Client",
    },
+   clientname:{
+    type:String,
+    trim:true,
+   },
     content:{
         type:String,
         required:true,

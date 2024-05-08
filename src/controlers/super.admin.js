@@ -26,10 +26,30 @@ const addNews = asyncHandler(async(req,res)=>{
 })
 const getNews = asyncHandler(async(req, res)=>{
 
-   const news = await News.find({broadcast:true}).exec()
+   const news = await News.find({}).exec()
    res.status(200).json(news)
 })
 
+
+
+const updateNews = asyncHandler(async(req,res)=>{
+    const sessionUser = req.session.user;
+    
+    const user = await User.findOne({email:sessionUser.email}) 
+    if(!user){
+        throw new ApiError(401, "user not found")
+   }
+   const superAdmin = await SuperAdmin.findOne({user:user._id});
+   if(!superAdmin){
+    throw new ApiError(403,"unauthorized")
+   }
+    const {newsid,content} = req.body
+    if(!content || !newsid){
+        throw new ApiError(409,"all field required")
+    }
+    const news = await News.updateOne({_id:newsid},{$set:{content:content}})
+    res.status(200).json(news)
+})
 const addNotification = asyncHandler(async(req,res)=>{
     const {content} = req.body;
     if(!content){
@@ -52,7 +72,7 @@ const addNotification = asyncHandler(async(req,res)=>{
 })
 const getNotifications = asyncHandler(async(req, res)=>{
   
-   const news = await Notification.find({broadcast:true}).exec()
+   const news = await Notification.find({}).exec()
    res.status(200).json(news)
 })
-export {addNews,getNews,addNotification,getNotifications}
+export {addNews,getNews,addNotification,getNotifications,updateNews}

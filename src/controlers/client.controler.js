@@ -121,6 +121,54 @@ const getApplications = asyncHandler(async(req,res)=>{
   client_details.push(temp);
 }
  
- res.status(200).json(client_details)
+return  res.status(200).json(client_details)
 })
-export {registerclient, getkeyandsecret,verifyclient, addEditor,getApplications}
+const getapplication = asyncHandler(async(req, res)=>{
+  const {clientid} = req.body
+  const sessionUser = req.session.user;
+  const user = await User.findOne({email:sessionUser.email});
+  if(!user){
+    throw new ApiError(409,"unauthorized")
+  }
+  const emp = await Employee.findOne({user:user._id ,client:clientid});
+  if(!emp){
+    throw new ApiError(409,"unauthorized")
+  }
+  const client = await Client.findOne({_id:clientid});
+  if(!client){
+    throw new ApiError(401,"no such client found ")
+  }
+return res.status(200).json(client)
+})
+const getemployees = asyncHandler(async(req, res)=>{
+  const {clientid} = req.body
+  const sessionUser = req.session.user;
+  const user = await User.findOne({email:sessionUser.email});
+  if(!user){
+    throw new ApiError(409,"unauthorized")
+  }
+  const client = await Client.findOne({_id:clientid});
+  if(!client){
+    throw new ApiError(401,"no such client found ")
+  }
+  const emp = await Employee.findOne({user:user._id ,client:clientid});
+  if(!emp){
+    throw new ApiError(409,"unauthorized")
+  }
+  if(emp.role !== "CLIENT_ADMIN"){
+    throw new ApiError(409,"unauthorized")
+  }
+  const emps = await Employee.find({
+    client:client._id
+   }).exec()
+   let client_details = [];
+   for (const e of emps) {
+    const temp = await User.findOne({ _id: e.user }).select("-password");
+    const temp1 = {"name":temp.name,"email":temp.email  ,"role":e.role,"verified":e.verified}
+    console.log(temp1);
+    client_details.push(temp1);
+  }
+   
+  return  res.status(200).json(client_details)
+})
+export {registerclient, getkeyandsecret,verifyclient, addEditor,getApplications ,getapplication,getemployees}

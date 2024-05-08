@@ -19,6 +19,7 @@ const Addnews = asyncHandler(async(req ,res)=>{
    }
    const news = await News.create({
     client:client._id,
+    clientname:client.applicationname,
     content:content,
       broadcast:false,
    })
@@ -48,6 +49,7 @@ const Addnotification = asyncHandler(async(req ,res)=>{
 
    const notification = await Notification.create({
     client:client._id,
+    clientname:client.applicationname,
     content:content,
       broadcast:false,
    })
